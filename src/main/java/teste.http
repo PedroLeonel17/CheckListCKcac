@@ -1,0 +1,57 @@
+POST http://localhost:8080/alunos
+Content-Type: application/json
+
+{
+  "nome": "João",
+  "curso": "Informática"
+}
+
+###
+POST http://localhost:8080/alunos
+Content-Type: application/json
+
+{
+"nome": "Pedro",
+"curso": "Spring"
+}
+###
+GET http://localhost:8080/alunos/2
+
+###
+GET https://www.kabum.com.br/computadores/pc/pc-gamer?page_number=1&page_size=60&facet_filters=eyJwcmljZSI6eyJtaW4iOjI1My41LCJtYXgiOjQwMDB9fQ==&sort=most_searched
+###
+
+POST http://localhost:8080/checklist
+Content-Type: application/json
+
+{
+  "curso": "João",
+  "inicio": "Informática",
+  "fim": "Informática",
+  "compareceu": false,
+  "aluno": 1
+}
+###
+POST http://localhost:8080/alunos
+Content-Type: application/json
+
+{
+"nome": "Matheus Dyzarz",
+"curso": "WEB"
+}
+
+###
+POST http://localhost:8080/checklist
+Content-Type: application/json
+
+{
+  "descricao": "",
+  "inicio": "2026-07-07T09:00:00",
+  "fim": "2026-07-07T11:00:00",
+  "compareceu": false,
+  "alunoId": 3
+}
+###
+
+GET http://localhost:8080/checklist/1
+###
