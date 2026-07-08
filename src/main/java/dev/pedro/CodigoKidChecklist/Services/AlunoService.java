@@ -6,6 +6,8 @@ import dev.pedro.CodigoKidChecklist.Model.Aluno;
 import dev.pedro.CodigoKidChecklist.Repository.AlunoRepository;
 import org.springframework.stereotype.Service;
 
+import org.springframework.stereotype.Service;
+
 @Service
 public class AlunoService {
 

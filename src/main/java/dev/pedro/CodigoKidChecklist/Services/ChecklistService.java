@@ -1,6 +1,9 @@
 package dev.pedro.CodigoKidChecklist.Services;
 
 import dev.pedro.CodigoKidChecklist.Dto.ChecklistDto;
+import dev.pedro.CodigoKidChecklist.Dto.ChecklistRespDto;
+import dev.pedro.CodigoKidChecklist.Enums.HorarioAula;
+import dev.pedro.CodigoKidChecklist.Exceptions.AlunoNullException;
 import dev.pedro.CodigoKidChecklist.Model.Aluno;
 import dev.pedro.CodigoKidChecklist.Model.Checklist;
 import dev.pedro.CodigoKidChecklist.Repository.AlunoRepository;
@@ -21,39 +24,39 @@ public class ChecklistService {
 
     public ChecklistDto salvarNovoCheckList(ChecklistDto dadosEntrada) {
 
-        Aluno aluno = alunoRepository.findById(dadosEntrada.getAlunoId())
-                       .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+        Aluno aluno = alunoRepository.findAlunoByNome(dadosEntrada.getNome())
+                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
 
+        System.out.println(aluno);
         Checklist checklist = new Checklist();
 
         checklist.setAluno(aluno);
-        checklist.setInicio(dadosEntrada.getInicio());
-        checklist.setFim(dadosEntrada.getFim());
-        checklist.setCompareceu(dadosEntrada.isCompareceu());
+        checklist.setHorarioAula(HorarioAula.valueOf(dadosEntrada.getHorarioAula()));
+        checklist.setCompareceu(dadosEntrada.isPresente());
         checklist.setDescricao(dadosEntrada.getDescricao());
 
         Checklist checklist1 = checklistRepository.save(checklist);
 
         ChecklistDto checkDto = new ChecklistDto();
-        checkDto.setAlunoId(aluno.getId());
-        checkDto.setInicio(checklist1.getInicio());
-        checkDto.setFim(checklist1.getFim());
-        checkDto.setCompareceu(checklist1.isCompareceu());
+        checkDto.setHorarioAula(checklist1.getHorarioAula().getValue());
+        checkDto.setPresente(checklist1.isCompareceu());
         checkDto.setDescricao(checklist1.getDescricao());
         return checkDto;
     }
 
-    public List<ChecklistDto> buscarPorId(Long id) {
-        List<Checklist> checklists = checklistRepository.findByAlunoId(id);
+    public List<ChecklistRespDto> buscarPorNome(String nome) {
+
+        Aluno aluno = alunoRepository.findAlunoByNome(nome).orElseThrow(() -> new AlunoNullException("Aluno não encontrado"));
+
+        List<Checklist> checklists = checklistRepository.findByAlunoId(aluno.getId());
 
         return checklists.stream()
                 .map(checklist -> {
-                    ChecklistDto dto = new ChecklistDto();
+                    ChecklistRespDto dto = new ChecklistRespDto();
+                    dto.setNome(aluno.getNome());
                     dto.setDescricao(checklist.getDescricao());
-                    dto.setInicio(checklist.getInicio());
-                    dto.setFim(checklist.getFim());
-                    dto.setCompareceu(checklist.isCompareceu());
-                    dto.setAlunoId(checklist.getAluno().getId());
+                    dto.setHorarioAula(checklist.getHorarioAula().getValue());
+                    dto.setPresente(checklist.isCompareceu());
                     return dto;
                 })
                 .toList();

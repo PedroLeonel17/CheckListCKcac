@@ -1,5 +1,6 @@
 package dev.pedro.CodigoKidChecklist.Model;
 
+import dev.pedro.CodigoKidChecklist.Enums.HorarioAula;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -14,8 +15,9 @@ public class Checklist {
     private Long id;
 
     private String descricao;
-    private Date inicio;
-    private Date fim;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "horario_aula")
+    private HorarioAula horarioAula;
     private boolean compareceu;
 
     @ManyToOne

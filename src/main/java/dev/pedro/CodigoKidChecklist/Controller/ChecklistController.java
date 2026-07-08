@@ -1,6 +1,7 @@
 package dev.pedro.CodigoKidChecklist.Controller;
 
 import dev.pedro.CodigoKidChecklist.Dto.ChecklistDto;
+import dev.pedro.CodigoKidChecklist.Dto.ChecklistRespDto;
 import dev.pedro.CodigoKidChecklist.Services.ChecklistService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +26,10 @@ public class ChecklistController{
         return ResponseEntity.status(HttpStatus.CREATED).body(checklist);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<List<ChecklistDto>> buscarPorId(@PathVariable Long id) {
+    @GetMapping("/{nome}")
+    public ResponseEntity<List<ChecklistRespDto>> buscarPorNome(@PathVariable String nome) {
 
-        List<ChecklistDto> ocorrencias = checklistService.buscarPorId(id);
+        List<ChecklistRespDto> ocorrencias = checklistService.buscarPorNome(nome);
 
         return ResponseEntity.ok(ocorrencias);
     }

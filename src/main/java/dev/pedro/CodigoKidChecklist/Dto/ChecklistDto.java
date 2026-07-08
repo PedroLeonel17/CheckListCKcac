@@ -7,10 +7,9 @@ import java.util.Date;
 @Data
 public class ChecklistDto {
 
+    private String nome;
+    private String observacao;
     private String descricao;
-    private Date inicio;
-    private Date fim;
-    private boolean compareceu;
-
-    private Long alunoId;
+    private String horarioAula;
+    private boolean presente;
 }

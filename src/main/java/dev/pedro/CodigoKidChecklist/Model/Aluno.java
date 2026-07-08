@@ -16,18 +16,8 @@ public class Aluno {
 
     private String curso;
 
-    private String senha;
-    // Construtor vazio (obrigatório para o JPA)
     public Aluno() {
 
-    }
-
-    public String getNome(){
-        return this.nome;
-    }
-
-    public void setNome(String nome){
-        this.nome = nome;
     }
 
 }
