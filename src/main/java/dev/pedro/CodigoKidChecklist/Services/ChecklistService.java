@@ -48,7 +48,7 @@ public class ChecklistService {
 
         Aluno aluno = alunoRepository.findAlunoByNome(nome).orElseThrow(() -> new AlunoNullException("Aluno não encontrado"));
 
-        List<Checklist> checklists = checklistRepository.findByAlunoId(aluno.getId());
+        List<Checklist> checklists = checklistRepository.findByAlunoId(aluno.getId()).orElseThrow(() -> new AlunoNullException("Deu ruim não encontrado"));
 
         return checklists.stream()
                 .map(checklist -> {

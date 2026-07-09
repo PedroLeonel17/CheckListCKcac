@@ -45,12 +45,12 @@ POST http://localhost:8080/checklist
 Content-Type: application/json
 
 {
-  "descricao": "",
+  "descricao": "rodando pelo docker",
   "horarioAula": "MANHA_10_12",
   "compareceu": false,
   "alunoId": 3
 }
 ###
 
-GET http://localhost:8080/checklist/1
+GET http://localhost:8080/checklist/Pedro
 ###
