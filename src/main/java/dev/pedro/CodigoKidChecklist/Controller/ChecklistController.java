@@ -1,5 +1,7 @@
 package dev.pedro.CodigoKidChecklist.Controller;
 
+import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistDateFilterDto;
+import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistYearDto;
 import dev.pedro.CodigoKidChecklist.Dto.ChecklistDto;
 import dev.pedro.CodigoKidChecklist.Dto.ChecklistRespDto;
 import dev.pedro.CodigoKidChecklist.Services.ChecklistService;
@@ -32,6 +34,14 @@ public class ChecklistController{
     public ResponseEntity<List<ChecklistRespDto>> buscarPorNome(@PathVariable String nome) {
 
         List<ChecklistRespDto> ocorrencias = checklistService.buscarPorNome(nome);
+
+        return ResponseEntity.ok(ocorrencias);
+    }
+
+    @PostMapping("/{filterdate}")
+    public ResponseEntity<List<ChecklistYearDto>> buscarPorNome(@RequestBody ChecklistDateFilterDto data) {
+
+        List<ChecklistYearDto> ocorrencias = checklistService.buscarPorData(data);
 
         return ResponseEntity.ok(ocorrencias);
     }

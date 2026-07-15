@@ -4,6 +4,7 @@ import dev.pedro.CodigoKidChecklist.Enums.HorarioAula;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -23,5 +24,7 @@ public class Checklist {
     @ManyToOne
     @JoinColumn(name = "aluno_id")
     private Aluno aluno;
+
+    private LocalDate data;
 
 }
