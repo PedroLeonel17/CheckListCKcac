@@ -12,10 +12,10 @@ Content-Type: application/json
 
 {
 "nome": "Pedro",
-"curso": "Spring"
+"curso": "Node"
 }
 ###
-GET http://localhost:8080/alunos/2
+GET http://localhost:8080/alunos/Pedro
 
 ###
 GET https://www.kabum.com.br/computadores/pc/pc-gamer?page_number=1&page_size=60&facet_filters=eyJwcmljZSI6eyJtaW4iOjI1My41LCJtYXgiOjQwMDB9fQ==&sort=most_searched
@@ -45,12 +45,19 @@ POST http://localhost:8080/checklist
 Content-Type: application/json
 
 {
-  "descricao": "rodando pelo docker",
+  "descricao": "agitado",
   "horarioAula": "MANHA_10_12",
   "compareceu": false,
-  "alunoId": 3
-}
+  "alunoId": 1}
 ###
 
-GET http://localhost:8080/checklist/Pedro
+GET http://localhost:8080/checklist/alunos
 ###
+
+POST http://localhost:8080/checklist/filterdate
+Content-Type: application/json
+
+{
+    "dataInicio": "2026-07-01",
+    "dataFim": "2026-07-15"
+}

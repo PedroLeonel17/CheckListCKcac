@@ -3,15 +3,16 @@ package dev.pedro.CodigoKidChecklist.Services;
 import dev.pedro.CodigoKidChecklist.Dto.Checklist.CheckListMonthDto;
 import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistDateFilterDto;
 import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistDayDto;
+import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistDto;
+import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistRespDto;
 import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistYearDto;
-import dev.pedro.CodigoKidChecklist.Dto.ChecklistDto;
-import dev.pedro.CodigoKidChecklist.Dto.ChecklistRespDto;
 import dev.pedro.CodigoKidChecklist.Enums.HorarioAula;
 import dev.pedro.CodigoKidChecklist.Exceptions.AlunoNullException;
-import dev.pedro.CodigoKidChecklist.Model.Aluno;
 import dev.pedro.CodigoKidChecklist.Model.Checklist;
-import dev.pedro.CodigoKidChecklist.Repository.AlunoRepository;
+import dev.pedro.CodigoKidChecklist.Model.Aluno.Aluno;
 import dev.pedro.CodigoKidChecklist.Repository.ChecklistRepository;
+import dev.pedro.CodigoKidChecklist.Repository.Aluno.AlunoRepository;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,6 +49,14 @@ public class ChecklistService {
         checkDto.setPresente(checklist1.isCompareceu());
         checkDto.setDescricao(checklist1.getDescricao());
         return checkDto;
+    }
+
+    public List<ChecklistDto> buscarTodos() {
+        List<Checklist> checklists = checklistRepository.findAll();
+
+        return checklists.stream()
+                .map(this::converterParaDto)
+                .toList();
     }
 
     public List<ChecklistRespDto> buscarPorNome(String nome) {
