@@ -3,7 +3,7 @@ package dev.pedro.CodigoKidChecklist.Controller.Aluno;
 import dev.pedro.CodigoKidChecklist.Dto.Aluno.AlunoCadastroDTO;
 import dev.pedro.CodigoKidChecklist.Dto.Aluno.AlunoDTO;
 import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistDto;
-
+import dev.pedro.CodigoKidChecklist.Model.Aluno.Aluno;
 import dev.pedro.CodigoKidChecklist.Services.ChecklistService;
 import dev.pedro.CodigoKidChecklist.Services.Aluno.AlunoService;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -45,5 +45,11 @@ public class ControllerAluno {
     @GetMapping("/alunos")
     public List<ChecklistDto> listarAlunos() {
         return checklistService.buscarTodos();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Aluno> deletarAluno(@PathVariable Long id) {
+        alunoService.deletarAluno(id);
+        return ResponseEntity.noContent().build();
     }
 }

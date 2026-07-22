@@ -11,8 +11,8 @@ POST http://localhost:8080/alunos
 Content-Type: application/json
 
 {
-"nome": "Pedro",
-"curso": "Node"
+"nome": "Meiryanne",
+"curso": "Java"
 }
 ###
 GET http://localhost:8080/alunos/Pedro
@@ -52,6 +52,9 @@ Content-Type: application/json
 ###
 
 GET http://localhost:8080/checklist/alunos
+###
+
+DELETE http://localhost:8080/alunos/7
 ###
 
 POST http://localhost:8080/checklist/filterdate

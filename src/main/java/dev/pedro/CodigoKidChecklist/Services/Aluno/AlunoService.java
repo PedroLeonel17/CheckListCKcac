@@ -17,23 +17,18 @@ public class AlunoService {
         this.alunoRepository = alunoRepository;
     }
 
-    public AlunoDTO salvarNovoAluno(AlunoCadastroDTO dadosEntrada) {
+    public AlunoDTO salvarNovoAluno(AlunoCadastroDTO dto) {
+        Aluno aluno = new Aluno();
+        aluno.setNome(dto.getNome());
+        aluno.setCurso(dto.getCurso());
 
+        Aluno alunoSalvo = alunoRepository.save(aluno);
 
-        Aluno alunoEntity = new Aluno();
-        alunoEntity.setNome(dadosEntrada.getNome());
-        alunoEntity.setCurso(dadosEntrada.getCurso());
+        AlunoDTO alunoDTO = new AlunoDTO();
+        alunoDTO.setNome(alunoSalvo.getNome());
+        alunoDTO.setCurso(alunoSalvo.getCurso());
 
-
-        Aluno alunoSalvo = alunoRepository.save(alunoEntity);
-
-        AlunoDTO dadosSaida = new AlunoDTO();
-
-
-        dadosSaida.setNome(alunoSalvo.getNome());
-        dadosSaida.setCurso(alunoSalvo.getCurso());
-
-        return dadosSaida;
+        return alunoDTO;
     }
 
     public AlunoDTO buscarPorId(Long id) {
@@ -42,6 +37,19 @@ public class AlunoService {
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
 
         AlunoDTO dto = new AlunoDTO();
+        dto.setNome(aluno.getNome());
+        dto.setCurso(aluno.getCurso());
+
+        return dto;
+    }
+
+    public Aluno deletarAluno(Long id) {
+        Aluno aluno = alunoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+
+        alunoRepository.delete(aluno);
+
+        Aluno dto = new Aluno();
         dto.setNome(aluno.getNome());
         dto.setCurso(aluno.getCurso());
 
