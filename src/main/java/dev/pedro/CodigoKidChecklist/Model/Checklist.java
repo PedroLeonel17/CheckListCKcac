@@ -1,6 +1,7 @@
 package dev.pedro.CodigoKidChecklist.Model;
 
 import dev.pedro.CodigoKidChecklist.Enums.HorarioAula;
+import dev.pedro.CodigoKidChecklist.Model.Aluno.Aluno;
 import jakarta.persistence.*;
 import lombok.Data;
 

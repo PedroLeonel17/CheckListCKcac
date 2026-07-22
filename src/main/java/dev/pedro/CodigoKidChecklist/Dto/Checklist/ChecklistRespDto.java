@@ -1,4 +1,4 @@
-package dev.pedro.CodigoKidChecklist.Dto;
+package dev.pedro.CodigoKidChecklist.Dto.Checklist;
 
 import lombok.Data;
 
