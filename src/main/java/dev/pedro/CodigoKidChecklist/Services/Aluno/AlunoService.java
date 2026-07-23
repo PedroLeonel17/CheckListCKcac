@@ -2,8 +2,11 @@ package dev.pedro.CodigoKidChecklist.Services.Aluno;
 
 import dev.pedro.CodigoKidChecklist.Dto.Aluno.AlunoCadastroDTO;
 import dev.pedro.CodigoKidChecklist.Dto.Aluno.AlunoDTO;
+import dev.pedro.CodigoKidChecklist.Dto.Aluno.AlunosNomesDTO;
 import dev.pedro.CodigoKidChecklist.Model.Aluno.Aluno;
 import dev.pedro.CodigoKidChecklist.Repository.Aluno.AlunoRepository;
+
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -54,5 +57,12 @@ public class AlunoService {
         dto.setCurso(aluno.getCurso());
 
         return dto;
+    }
+
+    public List<AlunosNomesDTO> buscarTodosNomesAlunos() {
+        return alunoRepository.findAll()
+                .stream()
+                .map(aluno -> new AlunosNomesDTO(aluno.getNome()))
+                .toList();
     }
 }
