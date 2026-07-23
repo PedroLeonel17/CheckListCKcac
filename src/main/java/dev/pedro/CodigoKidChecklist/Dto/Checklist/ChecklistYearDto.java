@@ -1,5 +1,4 @@
 package dev.pedro.CodigoKidChecklist.Dto.Checklist;
-import dev.pedro.CodigoKidChecklist.Dto.Checklist.CheckListMonthDto;
 import lombok.Data;
 
 import java.util.List;
