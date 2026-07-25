@@ -3,6 +3,7 @@ package dev.pedro.CodigoKidChecklist.Services.Aluno;
 import dev.pedro.CodigoKidChecklist.Dto.Aluno.AlunoCadastroDTO;
 import dev.pedro.CodigoKidChecklist.Dto.Aluno.AlunoDTO;
 import dev.pedro.CodigoKidChecklist.Dto.Aluno.AlunosNomesDTO;
+import dev.pedro.CodigoKidChecklist.Dto.Aluno.CursosDisponiveisDto;
 import dev.pedro.CodigoKidChecklist.Model.Aluno.Aluno;
 import dev.pedro.CodigoKidChecklist.Repository.Aluno.AlunoRepository;
 
@@ -63,6 +64,13 @@ public class AlunoService {
         return alunoRepository.findAll()
                 .stream()
                 .map(aluno -> new AlunosNomesDTO(aluno.getNome()))
+                .toList();
+    }
+
+    public List<CursosDisponiveisDto> buscarPorTodosCursos() {
+        return alunoRepository.findAll()
+                .stream()
+                .map(aluno -> new CursosDisponiveisDto(aluno.getCurso()))
                 .toList();
     }
 }

@@ -64,3 +64,6 @@ Content-Type: application/json
     "dataInicio": "2026-07-01",
     "dataFim": "2026-07-15"
 }
+###
+
+GET http://localhost:8080/checklist/acompanhamento

@@ -1,8 +1,10 @@
 package dev.pedro.CodigoKidChecklist.Dto.Checklist;
 
-import lombok.Data;
+
 
 import java.time.LocalDate;
+
+import lombok.Data;
 
 @Data
 public class ChecklistDateFilterDto {

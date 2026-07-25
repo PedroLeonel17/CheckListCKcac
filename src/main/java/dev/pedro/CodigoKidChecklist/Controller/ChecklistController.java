@@ -4,11 +4,12 @@ import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistDateFilterDto;
 import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistDto;
 import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistRespDto;
 import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistYearDto;
+import dev.pedro.CodigoKidChecklist.Dto.Periodo.PeriodoDto;
 import dev.pedro.CodigoKidChecklist.Services.ChecklistService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 
@@ -42,6 +43,14 @@ public class ChecklistController{
     public ResponseEntity<List<ChecklistYearDto>> buscarPorNome(@RequestBody ChecklistDateFilterDto data) {
 
         List<ChecklistYearDto> ocorrencias = checklistService.buscarPorData(data);
+
+        return ResponseEntity.ok(ocorrencias);
+    }
+
+    @GetMapping("/acompanhamento")
+    public ResponseEntity<PeriodoDto> buscarPorDataAtual() {
+
+        PeriodoDto ocorrencias = checklistService.buscarDadosPorDataAtual();
 
         return ResponseEntity.ok(ocorrencias);
     }

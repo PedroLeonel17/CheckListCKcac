@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.Date;
+
 
 @Entity
 @Table(name = "checklist")
@@ -28,4 +28,6 @@ public class Checklist {
 
     private LocalDate data;
 
+    public Checklist() {
+    }
 }

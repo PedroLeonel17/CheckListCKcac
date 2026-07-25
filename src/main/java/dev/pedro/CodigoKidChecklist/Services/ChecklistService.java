@@ -1,20 +1,27 @@
 package dev.pedro.CodigoKidChecklist.Services;
 
+import dev.pedro.CodigoKidChecklist.Dto.Aluno.AlunoChecklistDto;
 import dev.pedro.CodigoKidChecklist.Dto.Checklist.CheckListMonthDto;
 import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistDateFilterDto;
 import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistDayDto;
 import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistDto;
 import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistRespDto;
 import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistYearDto;
+import dev.pedro.CodigoKidChecklist.Dto.Periodo.PeriodoDto;
+import dev.pedro.CodigoKidChecklist.Dto.Professor.ProfessorChecklistDto;
 import dev.pedro.CodigoKidChecklist.Enums.HorarioAula;
 import dev.pedro.CodigoKidChecklist.Exceptions.AlunoNullException;
 import dev.pedro.CodigoKidChecklist.Model.Checklist;
+import dev.pedro.CodigoKidChecklist.Model.Periodo;
 import dev.pedro.CodigoKidChecklist.Model.Aluno.Aluno;
 import dev.pedro.CodigoKidChecklist.Repository.ChecklistRepository;
+import dev.pedro.CodigoKidChecklist.Repository.PeriodoRepository;
 import dev.pedro.CodigoKidChecklist.Repository.Aluno.AlunoRepository;
 
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,10 +30,12 @@ import java.util.stream.Collectors;
 public class ChecklistService {
     private final ChecklistRepository checklistRepository;
     private final AlunoRepository alunoRepository;
+    private final PeriodoRepository periodoRepository;
 
-    public ChecklistService(ChecklistRepository checklistRepository, AlunoRepository alunoRepository) {
+    public ChecklistService(ChecklistRepository checklistRepository, AlunoRepository alunoRepository, PeriodoRepository periodoRepository) {
         this.checklistRepository = checklistRepository;
         this.alunoRepository = alunoRepository;
+        this.periodoRepository = periodoRepository;
     }
 
     public ChecklistDto salvarNovoCheckList(ChecklistDto dadosEntrada) {
@@ -45,7 +54,7 @@ public class ChecklistService {
         Checklist checklist1 = checklistRepository.save(checklist);
 
         ChecklistDto checkDto = new ChecklistDto();
-        checkDto.setHorarioAula(checklist1.getHorarioAula().getValue());
+        checkDto.setHorarioAula(checklist1.getHorarioAula().toString());
         checkDto.setPresente(checklist1.isCompareceu());
         checkDto.setDescricao(checklist1.getDescricao());
         return checkDto;
@@ -70,7 +79,7 @@ public class ChecklistService {
                     ChecklistRespDto dto = new ChecklistRespDto();
                     dto.setNome(aluno.getNome());
                     dto.setDescricao(checklist.getDescricao());
-                    dto.setHorarioAula(checklist.getHorarioAula().getValue());
+                    dto.setHorarioAula(checklist.getHorarioAula().toString());
                     dto.setPresente(checklist.isCompareceu());
                     return dto;
                 })
@@ -162,5 +171,63 @@ public class ChecklistService {
         dto.setPresente(checklist.isCompareceu());
 
         return dto;
+    }
+
+
+    public PeriodoDto buscarDadosPorDataAtual(){
+        PeriodoDto periodoDto = new PeriodoDto();
+      
+       
+        Periodo periodo = periodoRepository.findAll().stream().filter(p -> verificarDiaAtual(p.getDiaDaSemana()))
+                                                              .filter(p -> verificarHorarioAtual(p.getInicio().getValue(), p.getFim().getValue())).findFirst().orElse(null);
+
+
+        List<AlunoChecklistDto> alunos = periodo.getAlunos().stream()
+                .map(aluno -> {
+                    AlunoChecklistDto alunoDto = new AlunoChecklistDto();
+                    alunoDto.setNome(aluno.getNome());
+                    return alunoDto;
+                })
+                .toList();
+
+        List<ProfessorChecklistDto> professores = periodo.getProfessores().stream()
+                .map(professor -> {
+                    ProfessorChecklistDto professorDto = new ProfessorChecklistDto();
+                    professorDto.setNome(professor.getNome());
+                    return professorDto;
+                })
+                .toList();
+
+        periodoDto.setInicio(periodo.getInicio().getValue());
+        periodoDto.setFim(periodo.getFim().getValue());
+        periodoDto.setAlunos(alunos);
+        periodoDto.setProfessores(professores);
+
+        return periodoDto;
+    }
+
+
+    private boolean verificarHorarioAtual(String horarioInicio, String horarioFim) {
+        LocalTime horaAtual = LocalTime.now();
+       
+        LocalTime inicio = LocalTime.parse(horarioInicio);
+        LocalTime fim = LocalTime.parse(horarioFim);
+        System.out.println("Data atual: " + LocalDate.now());
+        System.out.println("Hora atual: " + horaAtual);
+        System.out.println("Início: " + inicio);
+        System.out.println("Fim: " + fim);
+        System.out.println("Está dentro do horário? " + (horaAtual.isAfter(inicio) && horaAtual.isBefore(fim)));
+        System.out.println("--------------------------------------------------------------------\n");
+        return horaAtual.isAfter(inicio) && horaAtual.isBefore(fim);
+    }
+
+    private boolean verificarDiaAtual(String diaDaSemana) {
+        LocalDate dataAtual = LocalDate.now();
+        String diaAtual = dataAtual.getDayOfWeek().toString();
+        System.out.println(diaAtual);
+        System.out.println("Dia da semana: " + diaDaSemana);
+        System.out.println("São iguais? " + diaAtual.equalsIgnoreCase(diaDaSemana));
+        System.out.println("--------------------------------------------------------------------\n");
+        return diaAtual.equalsIgnoreCase(diaDaSemana);
     }
 }
