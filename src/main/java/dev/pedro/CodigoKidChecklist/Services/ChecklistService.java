@@ -176,7 +176,7 @@ public class ChecklistService {
 
     public PeriodoDto buscarDadosPorDataAtual(){
         PeriodoDto periodoDto = new PeriodoDto();
-      
+
        
         Periodo periodo = periodoRepository.findAll().stream().filter(p -> verificarDiaAtual(p.getDiaDaSemana()))
                                                               .filter(p -> verificarHorarioAtual(p.getInicio().getValue(), p.getFim().getValue())).findFirst().orElse(null);
@@ -186,6 +186,7 @@ public class ChecklistService {
                 .map(aluno -> {
                     AlunoChecklistDto alunoDto = new AlunoChecklistDto();
                     alunoDto.setNome(aluno.getNome());
+                    alunoDto.setCurso(aluno.getCurso());
                     return alunoDto;
                 })
                 .toList();
@@ -202,32 +203,25 @@ public class ChecklistService {
         periodoDto.setFim(periodo.getFim().getValue());
         periodoDto.setAlunos(alunos);
         periodoDto.setProfessores(professores);
+        periodoDto.setData(LocalDate.now());
 
         return periodoDto;
     }
 
 
     private boolean verificarHorarioAtual(String horarioInicio, String horarioFim) {
-        LocalTime horaAtual = LocalTime.now();
+        LocalTime horaAtual = LocalTime.of(14,55,32);
        
         LocalTime inicio = LocalTime.parse(horarioInicio);
         LocalTime fim = LocalTime.parse(horarioFim);
-        System.out.println("Data atual: " + LocalDate.now());
-        System.out.println("Hora atual: " + horaAtual);
-        System.out.println("Início: " + inicio);
-        System.out.println("Fim: " + fim);
-        System.out.println("Está dentro do horário? " + (horaAtual.isAfter(inicio) && horaAtual.isBefore(fim)));
-        System.out.println("--------------------------------------------------------------------\n");
         return horaAtual.isAfter(inicio) && horaAtual.isBefore(fim);
     }
 
     private boolean verificarDiaAtual(String diaDaSemana) {
         LocalDate dataAtual = LocalDate.now();
-        String diaAtual = dataAtual.getDayOfWeek().toString();
-        System.out.println(diaAtual);
-        System.out.println("Dia da semana: " + diaDaSemana);
-        System.out.println("São iguais? " + diaAtual.equalsIgnoreCase(diaDaSemana));
-        System.out.println("--------------------------------------------------------------------\n");
+
+        //String diaAtual = dataAtual.getDayOfWeek().toString();
+        String diaAtual = "TUESDAY";
         return diaAtual.equalsIgnoreCase(diaDaSemana);
     }
 }
