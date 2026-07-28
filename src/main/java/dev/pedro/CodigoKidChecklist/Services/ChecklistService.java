@@ -17,6 +17,9 @@ import dev.pedro.CodigoKidChecklist.Model.Aluno.Aluno;
 import dev.pedro.CodigoKidChecklist.Repository.ChecklistRepository;
 import dev.pedro.CodigoKidChecklist.Repository.PeriodoRepository;
 import dev.pedro.CodigoKidChecklist.Repository.Aluno.AlunoRepository;
+import dev.pedro.CodigoKidChecklist.Services.Rules.ChecklistRules;
+
+import dev.pedro.CodigoKidChecklist.Utils.Utils;
 
 import org.springframework.stereotype.Service;
 
@@ -175,12 +178,25 @@ public class ChecklistService {
 
 
     public PeriodoDto buscarDadosPorDataAtual(){
-        PeriodoDto periodoDto = new PeriodoDto();
 
-       
-        Periodo periodo = periodoRepository.findAll().stream().filter(p -> verificarDiaAtual(p.getDiaDaSemana()))
-                                                              .filter(p -> verificarHorarioAtual(p.getInicio().getValue(), p.getFim().getValue())).findFirst().orElse(null);
+        ChecklistRules.setLocalDate(LocalDate.of(2026, 7, 29));
+        ChecklistRules.setLocalTime(LocalTime.of(9,15,30));
+        
+        if (!ChecklistRules.validarPeriodosValidosPreenchimentoChecklist())
+            return null;
+        
+        
+        String dataAtual = ChecklistRules.getDataAtual().getDayOfWeek().toString();
+        HorarioAula horarioAtual = HorarioAula.obterHorarioInicio(LocalTime.of(9,15,30));
+        
+        System.out.println(dataAtual);
+        System.out.println(horarioAtual);
+        
+        Periodo periodo = periodoRepository.findByDiaDaSemanaAndInicio(dataAtual, horarioAtual).orElseThrow();
 
+        if(periodo == null){
+            return null;
+        }
 
         List<AlunoChecklistDto> alunos = periodo.getAlunos().stream()
                 .map(aluno -> {
@@ -198,30 +214,10 @@ public class ChecklistService {
                     return professorDto;
                 })
                 .toList();
-
-        periodoDto.setInicio(periodo.getInicio().getValue());
-        periodoDto.setFim(periodo.getFim().getValue());
-        periodoDto.setAlunos(alunos);
-        periodoDto.setProfessores(professores);
-        periodoDto.setData(LocalDate.now());
+        
+        PeriodoDto periodoDto = Utils.CreatePeriodoDto(periodo, alunos, professores);
 
         return periodoDto;
     }
 
-
-    private boolean verificarHorarioAtual(String horarioInicio, String horarioFim) {
-        LocalTime horaAtual = LocalTime.of(14,55,32);
-       
-        LocalTime inicio = LocalTime.parse(horarioInicio);
-        LocalTime fim = LocalTime.parse(horarioFim);
-        return horaAtual.isAfter(inicio) && horaAtual.isBefore(fim);
-    }
-
-    private boolean verificarDiaAtual(String diaDaSemana) {
-        LocalDate dataAtual = LocalDate.now();
-
-        //String diaAtual = dataAtual.getDayOfWeek().toString();
-        String diaAtual = "TUESDAY";
-        return diaAtual.equalsIgnoreCase(diaDaSemana);
-    }
 }
