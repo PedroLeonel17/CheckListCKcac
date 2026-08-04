@@ -9,25 +9,21 @@ import java.time.LocalDate;
 
 
 @Entity
-@Table(name = "checklist")
+@Table(name = "item_checklist")
 @Data
-public class Checklist {
+public class ItemChecklist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String descricao;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "horario_aula")
-    private HorarioAula horarioAula;
+    private String parecer;
+    private String observacao;
     private boolean compareceu;
 
     @ManyToOne
     @JoinColumn(name = "aluno_id")
     private Aluno aluno;
 
-    private LocalDate data;
-
-    public Checklist() {
+    public ItemChecklist() {
     }
 }

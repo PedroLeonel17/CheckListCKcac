@@ -1,26 +1,22 @@
 package dev.pedro.CodigoKidChecklist.Services;
 
-import dev.pedro.CodigoKidChecklist.Dto.Aluno.AlunoChecklistDto;
-import dev.pedro.CodigoKidChecklist.Dto.Checklist.CheckListMonthDto;
-import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistDateFilterDto;
-import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistDayDto;
-import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistDto;
-import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistRespDto;
-import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistYearDto;
-import dev.pedro.CodigoKidChecklist.Dto.Periodo.PeriodoDto;
-import dev.pedro.CodigoKidChecklist.Dto.Professor.ProfessorChecklistDto;
+import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistConsolidadoDto;
+import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistPendenteDto;
+import dev.pedro.CodigoKidChecklist.Dto.ItemChecklistDto.ItemChecklistConsolidadoDto;
+import dev.pedro.CodigoKidChecklist.Dto.ItemChecklistDto.ItemChecklistDto;
+import dev.pedro.CodigoKidChecklist.Dto.Professor.ProfessorDto;
 import dev.pedro.CodigoKidChecklist.Enums.HorarioAula;
-import dev.pedro.CodigoKidChecklist.Exceptions.AlunoNullException;
-import dev.pedro.CodigoKidChecklist.Model.Checklist;
-import dev.pedro.CodigoKidChecklist.Model.Periodo;
+import dev.pedro.CodigoKidChecklist.Enums.StatusChecklist;
 import dev.pedro.CodigoKidChecklist.Model.Aluno.Aluno;
+import dev.pedro.CodigoKidChecklist.Model.Checklist;
+import dev.pedro.CodigoKidChecklist.Model.ItemChecklist;
+import dev.pedro.CodigoKidChecklist.Model.Periodo;
+import dev.pedro.CodigoKidChecklist.Model.Professor;
 import dev.pedro.CodigoKidChecklist.Repository.ChecklistRepository;
-import dev.pedro.CodigoKidChecklist.Repository.PeriodoRepository;
-import dev.pedro.CodigoKidChecklist.Repository.Aluno.AlunoRepository;
+import dev.pedro.CodigoKidChecklist.Services.Checklist.ChecklistServices;
 import dev.pedro.CodigoKidChecklist.Services.Rules.ChecklistRules;
 
-import dev.pedro.CodigoKidChecklist.Utils.Utils;
-
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -32,192 +28,89 @@ import java.util.stream.Collectors;
 @Service
 public class ChecklistService {
     private final ChecklistRepository checklistRepository;
-    private final AlunoRepository alunoRepository;
-    private final PeriodoRepository periodoRepository;
+    private final ChecklistServices checklistServices;
+    private final ChecklistRules checklistRules;
 
-    public ChecklistService(ChecklistRepository checklistRepository, AlunoRepository alunoRepository, PeriodoRepository periodoRepository) {
+    public ChecklistService(ChecklistRepository checklistRepository, ChecklistServices checklistServices, ChecklistRules checklistRules) {
         this.checklistRepository = checklistRepository;
-        this.alunoRepository = alunoRepository;
-        this.periodoRepository = periodoRepository;
+        this.checklistServices = checklistServices;
+        this.checklistRules = checklistRules;
     }
 
-    public ChecklistDto salvarNovoCheckList(ChecklistDto dadosEntrada) {
+    @Transactional
+    public ChecklistConsolidadoDto ConsolidarChecklist(ChecklistConsolidadoDto dadosEntrada) {
 
-        Aluno aluno = alunoRepository.findAlunoByNome(dadosEntrada.getNome())
-                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+        Checklist checklist = checklistRepository.getReferenceById(dadosEntrada.id());
 
-        System.out.println(aluno);
-        Checklist checklist = new Checklist();
-
-        checklist.setAluno(aluno);
-        checklist.setHorarioAula(HorarioAula.valueOf(dadosEntrada.getHorarioAula()));
-        checklist.setCompareceu(dadosEntrada.isPresente());
-        checklist.setDescricao(dadosEntrada.getDescricao());
-        checklist.setData(dadosEntrada.getData());
-        Checklist checklist1 = checklistRepository.save(checklist);
-
-        ChecklistDto checkDto = new ChecklistDto();
-        checkDto.setHorarioAula(checklist1.getHorarioAula().toString());
-        checkDto.setPresente(checklist1.isCompareceu());
-        checkDto.setDescricao(checklist1.getDescricao());
-        return checkDto;
-    }
-
-    public List<ChecklistDto> buscarTodos() {
-        List<Checklist> checklists = checklistRepository.findAll();
-
-        return checklists.stream()
-                .map(this::converterParaDto)
-                .toList();
-    }
-
-    public List<ChecklistRespDto> buscarPorNome(String nome) {
-
-        Aluno aluno = alunoRepository.findAlunoByNome(nome).orElseThrow(() -> new AlunoNullException("Aluno não encontrado"));
-
-        List<Checklist> checklists = checklistRepository.findByAlunoId(aluno.getId()).orElseThrow(() -> new AlunoNullException("Deu ruim não encontrado"));
-
-        return checklists.stream()
-                .map(checklist -> {
-                    ChecklistRespDto dto = new ChecklistRespDto();
-                    dto.setNome(aluno.getNome());
-                    dto.setDescricao(checklist.getDescricao());
-                    dto.setHorarioAula(checklist.getHorarioAula().toString());
-                    dto.setPresente(checklist.isCompareceu());
-                    return dto;
-                })
-                .toList();
-    }
-
-    public List<ChecklistYearDto> buscarPorData(ChecklistDateFilterDto dto) {
-
-        List<Checklist> checklists = checklistRepository
-                .findByDataBetween(dto.getDataInicio(), dto.getDataFim()).orElseThrow();
-
-        Map<Integer, Map<Integer, Map<Integer, List<Checklist>>>> agrupado =
-                checklists.stream()
-                        .collect(Collectors.groupingBy(
-                                c -> c.getData().getYear(),
-                                Collectors.groupingBy(
-                                        c -> c.getData().getMonthValue(),
-                                        Collectors.groupingBy(
-                                                c -> c.getData().getDayOfMonth()
-                                        )
-                                )
-                        ));
-
-
-        return agrupado.entrySet()
+        Map<Long, ItemChecklistConsolidadoDto> itensPorId = dadosEntrada.itemConsolidado()
                 .stream()
-                .map(anoEntry -> {
+                .collect(Collectors.toMap(
+                        ItemChecklistConsolidadoDto::id,
+                        item -> item
+                ));
 
-                    ChecklistYearDto yearDto = new ChecklistYearDto();
-                    yearDto.setAno(anoEntry.getKey());
+        for (ItemChecklist itemBanco : checklist.getItensChecklist()) {
 
+            ItemChecklistConsolidadoDto itemDto = itensPorId.get(itemBanco.getId());
 
-                    List<CheckListMonthDto> meses = anoEntry.getValue()
-                            .entrySet()
-                            .stream()
-                            .map(mesEntry -> {
-
-                                CheckListMonthDto monthDto = new CheckListMonthDto();
-                                monthDto.setMes(mesEntry.getKey());
-
-
-                                List<ChecklistDayDto> dias = mesEntry.getValue()
-                                        .entrySet()
-                                        .stream()
-                                        .map(diaEntry -> {
-
-                                            ChecklistDayDto dayDto = new ChecklistDayDto();
-
-                                            dayDto.setDia(diaEntry.getKey());
-
-                                            List<ChecklistDto> lista = diaEntry.getValue()
-                                                    .stream()
-                                                    .map(this::converterParaDto)
-                                                    .toList();
-
-                                            dayDto.setChecklists(lista);
-
-                                            return dayDto;
-
-                                        })
-                                        .toList();
-
-
-                                monthDto.setDias(dias);
-
-                                return monthDto;
-
-                            })
-                            .toList();
-
-
-                    yearDto.setMeses(meses);
-
-                    return yearDto;
-
-                })
-                .toList();
-    }
-
-
-    private ChecklistDto converterParaDto(Checklist checklist) {
-
-        ChecklistDto dto = new ChecklistDto();
-
-        dto.setNome(checklist.getAluno().getNome());
-        dto.setObservacao(checklist.getDescricao());
-        dto.setDescricao(checklist.getDescricao());
-        dto.setData(checklist.getData());
-        dto.setPresente(checklist.isCompareceu());
-
-        return dto;
-    }
-
-
-    public PeriodoDto buscarDadosPorDataAtual(){
-
-        ChecklistRules.setLocalDate(LocalDate.of(2026, 7, 29));
-        ChecklistRules.setLocalTime(LocalTime.of(9,15,30));
-        
-        if (!ChecklistRules.validarPeriodosValidosPreenchimentoChecklist())
-            return null;
-        
-        
-        String dataAtual = ChecklistRules.getDataAtual().getDayOfWeek().toString();
-        HorarioAula horarioAtual = HorarioAula.obterHorarioInicio(LocalTime.of(9,15,30));
-        
-        System.out.println(dataAtual);
-        System.out.println(horarioAtual);
-        
-        Periodo periodo = periodoRepository.findByDiaDaSemanaAndInicio(dataAtual, horarioAtual).orElseThrow();
-
-        if(periodo == null){
-            return null;
+            if (itemDto != null) {
+                itemBanco.setCompareceu(itemDto.presente());
+                itemBanco.setParecer(itemDto.parecer());
+                itemBanco.setObservacao(itemDto.observacao());
+            }
         }
 
-        List<AlunoChecklistDto> alunos = periodo.getAlunos().stream()
-                .map(aluno -> {
-                    AlunoChecklistDto alunoDto = new AlunoChecklistDto();
-                    alunoDto.setNome(aluno.getNome());
-                    alunoDto.setCurso(aluno.getCurso());
-                    return alunoDto;
-                })
-                .toList();
+        checklist.setStatus(StatusChecklist.HOMOLOGADO);
 
-        List<ProfessorChecklistDto> professores = periodo.getProfessores().stream()
-                .map(professor -> {
-                    ProfessorChecklistDto professorDto = new ProfessorChecklistDto();
-                    professorDto.setNome(professor.getNome());
-                    return professorDto;
-                })
-                .toList();
-        
-        PeriodoDto periodoDto = Utils.CreatePeriodoDto(periodo, alunos, professores);
-
-        return periodoDto;
+        return dadosEntrada;
     }
 
+    public ChecklistPendenteDto criarChecklistPendente(){
+
+        LocalDate ld = LocalDate.of(2026, 7, 29);
+        LocalTime lt = LocalTime.of(9,15,30);
+
+        if (!checklistRules.validarPeriodosValidosPreenchimentoChecklist(ld, lt))
+            return null;
+
+        String dataAtual = ld.getDayOfWeek().toString();
+        HorarioAula horarioAtual = HorarioAula.obterHorarioInicio(lt);
+
+        Periodo periodo = checklistServices.periodoService().encontrarPeriodo(dataAtual, horarioAtual);
+
+        Checklist checklist = new Checklist();
+
+        for(Aluno aluno : periodo.getAlunos()){
+            ItemChecklist itemChecklist = new ItemChecklist();
+            itemChecklist.setAluno(aluno);
+            checklist.getItensChecklist().add(itemChecklist);
+        }
+
+        checklist.setData(ld);
+        checklist.setPeriodo(periodo);
+        checklist.setStatus(StatusChecklist.PENDENTE);
+
+        checklistRepository.save(checklist);
+
+        List<Professor> professores = checklist.getPeriodo().getProfessores();
+        List<ItemChecklist> itens = checklist.getItensChecklist();
+
+
+
+        List<ProfessorDto> professoresDto = professores.stream().map(p -> new ProfessorDto(p.getNome())).toList();
+        List<ItemChecklistDto> itensDto = itens.stream()
+                .map(item -> new ItemChecklistDto(
+                        item.getId(),
+                        item.getAluno().getNome(),
+                        item.isCompareceu(),
+                        item.getObservacao()
+                ))
+                .toList();
+
+        return new ChecklistPendenteDto(checklist.getId(),
+                                        checklist.getData(),
+                                        checklist.getStatus(),
+                                        itensDto,
+                                        professoresDto);
+    }
 }

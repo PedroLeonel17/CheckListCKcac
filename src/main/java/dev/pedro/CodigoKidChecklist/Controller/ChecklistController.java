@@ -1,9 +1,6 @@
 package dev.pedro.CodigoKidChecklist.Controller;
 
-import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistDateFilterDto;
-import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistDto;
-import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistRespDto;
-import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistYearDto;
+import dev.pedro.CodigoKidChecklist.Dto.Checklist.*;
 import dev.pedro.CodigoKidChecklist.Dto.Periodo.PeriodoDto;
 import dev.pedro.CodigoKidChecklist.Services.ChecklistService;
 import org.springframework.http.HttpStatus;
@@ -25,32 +22,16 @@ public class ChecklistController{
     }
 
     // Salvar aluno (Mapeia o POST para "/alunos")
-    @PostMapping
-    public ResponseEntity<ChecklistDto> salvar(@RequestBody ChecklistDto dto) {
-        ChecklistDto checklist = checklistService.salvarNovoCheckList(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(checklist);
-    }
-
-    @GetMapping("/{nome}")
-    public ResponseEntity<List<ChecklistRespDto>> buscarPorNome(@PathVariable String nome) {
-
-        List<ChecklistRespDto> ocorrencias = checklistService.buscarPorNome(nome);
-
-        return ResponseEntity.ok(ocorrencias);
-    }
-
-    @PostMapping("/{filterdate}")
-    public ResponseEntity<List<ChecklistYearDto>> buscarPorNome(@RequestBody ChecklistDateFilterDto data) {
-
-        List<ChecklistYearDto> ocorrencias = checklistService.buscarPorData(data);
-
-        return ResponseEntity.ok(ocorrencias);
+    @PatchMapping("/acompanhamento")
+    public ResponseEntity<ChecklistConsolidadoDto> ConsolidarChecklist(@RequestBody ChecklistConsolidadoDto dto) {
+        ChecklistConsolidadoDto checklist = checklistService.ConsolidarChecklist(dto);
+        return ResponseEntity.status(HttpStatus.OK).body(checklist);
     }
 
     @GetMapping("/acompanhamento")
-    public ResponseEntity<PeriodoDto> buscarPorDataAtual() {
+    public ResponseEntity<ChecklistPendenteDto> buscarPorDataAtual() {
 
-        PeriodoDto ocorrencias = checklistService.buscarDadosPorDataAtual();
+        ChecklistPendenteDto ocorrencias = checklistService.criarChecklistPendente();
 
         return ResponseEntity.ok(ocorrencias);
     }
