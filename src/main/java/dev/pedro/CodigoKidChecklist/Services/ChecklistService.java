@@ -54,9 +54,11 @@ public class ChecklistService {
             ItemChecklistConsolidadoDto itemDto = itensPorId.get(itemBanco.getId());
 
             if (itemDto != null) {
-                itemBanco.setCompareceu(itemDto.presente());
                 itemBanco.setParecer(itemDto.parecer());
                 itemBanco.setObservacao(itemDto.observacao());
+                itemBanco.setPresente(itemDto.presente());
+                itemBanco.setRecuperacao(itemDto.recuperacao());
+                itemBanco.setIntervalo(itemDto.intervalo());
             }
         }
 
@@ -67,7 +69,7 @@ public class ChecklistService {
 
     public ChecklistPendenteDto criarChecklistPendente(){
 
-        LocalDate ld = LocalDate.of(2026, 7, 29);
+        LocalDate ld = LocalDate.of(2026, 8, 4);
         LocalTime lt = LocalTime.of(9,15,30);
 
         if (!checklistRules.validarPeriodosValidosPreenchimentoChecklist(ld, lt))
@@ -80,15 +82,20 @@ public class ChecklistService {
 
         Checklist checklist = new Checklist();
 
+        checklist.setData(ld);
+        checklist.setDiaSemana(dataAtual);
+        checklist.setHoraEntrada(periodo.getInicio());
+        checklist.setHoraSaida(periodo.getFim());
+        checklist.setPeriodo(periodo);
+        checklist.setStatus(StatusChecklist.PENDENTE);
+
         for(Aluno aluno : periodo.getAlunos()){
             ItemChecklist itemChecklist = new ItemChecklist();
             itemChecklist.setAluno(aluno);
+            itemChecklist.setPresente(true);
+            itemChecklist.setIntervalo(true);
             checklist.getItensChecklist().add(itemChecklist);
         }
-
-        checklist.setData(ld);
-        checklist.setPeriodo(periodo);
-        checklist.setStatus(StatusChecklist.PENDENTE);
 
         checklistRepository.save(checklist);
 
@@ -102,8 +109,11 @@ public class ChecklistService {
                 .map(item -> new ItemChecklistDto(
                         item.getId(),
                         item.getAluno().getNome(),
-                        item.isCompareceu(),
-                        item.getObservacao()
+                        item.getParecer(),
+                        item.getObservacao(),
+                        item.isPresente(),
+                        item.isRecuperacao(),
+                        item.isIntervalo()
                 ))
                 .toList();
 
@@ -111,6 +121,9 @@ public class ChecklistService {
                                         checklist.getData(),
                                         checklist.getStatus(),
                                         itensDto,
-                                        professoresDto);
+                                        professoresDto,
+                                        checklist.getDiaSemana(),
+                                        checklist.getHoraEntrada().getValue(),
+                                        checklist.getHoraSaida().getValue());
     }
 }

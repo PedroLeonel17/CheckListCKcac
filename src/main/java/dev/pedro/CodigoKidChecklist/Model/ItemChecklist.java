@@ -18,7 +18,10 @@ public class ItemChecklist {
 
     private String parecer;
     private String observacao;
-    private boolean compareceu;
+    private boolean presente;
+    private boolean intervalo;
+    private boolean recuperacao;
+
 
     @ManyToOne
     @JoinColumn(name = "aluno_id")

@@ -27,6 +27,15 @@ public class Checklist {
     @Column(name = "status")
     private StatusChecklist status;
 
+
+    private String diaSemana;
+
+    @Enumerated(EnumType.STRING)
+    private HorarioAula horaEntrada;
+    @Enumerated(EnumType.STRING)
+    private HorarioAula horaSaida;
+
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "checklist_id")
     private List<ItemChecklist> itensChecklist = new ArrayList<>();

@@ -11,5 +11,8 @@ public record ChecklistPendenteDto(Long id,
                                    LocalDate data,
                                    StatusChecklist status,
                                    List<ItemChecklistDto> itemChecklistDto,
-                                   List<ProfessorDto> professores) {
+                                   List<ProfessorDto> professores,
+                                   String diaSemana,
+                                   String horaEntrada,
+                                   String horaSaida) {
 }

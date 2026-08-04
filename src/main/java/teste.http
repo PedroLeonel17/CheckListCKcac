@@ -67,3 +67,46 @@ Content-Type: application/json
 ###
 
 GET http://localhost:8080/checklist/acompanhamento
+
+###
+
+PATCH http://localhost:8080/checklist/acompanhamento
+Content-Type: application/json
+
+{
+  "id": 2,
+  "itemConsolidado": [
+    {
+      "id": 8,
+      "parecer": "Excelente participação.",
+      "observacao": "Concluiu todas as atividades.",
+      "presente": true,
+      "recuperacao": false,
+      "intervalo": false
+    },
+    {
+      "id": 9,
+      "parecer": "Bom desempenho.",
+      "observacao": "",
+      "presente": true,
+      "recuperacao": false,
+      "intervalo": false
+    },
+    {
+      "id": 10,
+      "parecer": "Ausente.",
+      "observacao": "Faltou sem justificativa.",
+      "presente": false,
+      "recuperacao": false,
+      "intervalo": false
+    },
+    {
+      "id": 11,
+      "parecer": "Precisa revisar o conteúdo.",
+      "observacao": "Será atendida na recuperação.",
+      "presente": true,
+      "recuperacao": true,
+      "intervalo": false
+    }
+  ]
+}

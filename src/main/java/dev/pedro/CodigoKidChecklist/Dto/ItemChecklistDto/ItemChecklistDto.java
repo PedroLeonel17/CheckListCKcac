@@ -4,6 +4,10 @@ import dev.pedro.CodigoKidChecklist.Model.ItemChecklist;
 public record ItemChecklistDto(
         Long id,
         String nomeAluno,
+        String parecer,
+        String observacao,
         boolean presente,
-        String observacao
+        boolean recuperacao,
+        boolean intervalo
+       
 ) {}

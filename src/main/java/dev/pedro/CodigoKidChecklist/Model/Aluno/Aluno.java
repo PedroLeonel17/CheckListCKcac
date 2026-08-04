@@ -1,6 +1,7 @@
 package dev.pedro.CodigoKidChecklist.Model.Aluno;
 
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import lombok.Data;
 
 @Entity
@@ -15,6 +16,9 @@ public class Aluno {
     private String nome;
 
     private String curso;
+
+    private LocalDate dataMatricula;
+    private LocalDate dataConclusao;
 
     public Aluno() {
 
