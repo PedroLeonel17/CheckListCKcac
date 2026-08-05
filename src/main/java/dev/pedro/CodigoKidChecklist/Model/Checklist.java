@@ -35,7 +35,6 @@ public class Checklist {
     @Enumerated(EnumType.STRING)
     private HorarioAula horaSaida;
 
-
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "checklist_id")
     private List<ItemChecklist> itensChecklist = new ArrayList<>();

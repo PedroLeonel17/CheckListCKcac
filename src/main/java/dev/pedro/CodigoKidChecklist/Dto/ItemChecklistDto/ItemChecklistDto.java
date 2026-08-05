@@ -9,5 +9,4 @@ public record ItemChecklistDto(
         boolean presente,
         boolean recuperacao,
         boolean intervalo
-       
 ) {}

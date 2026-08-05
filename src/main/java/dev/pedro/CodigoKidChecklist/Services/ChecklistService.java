@@ -24,12 +24,17 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.ArrayDeque;
+import java.util.Queue;
+
 
 @Service
 public class ChecklistService {
     private final ChecklistRepository checklistRepository;
     private final ChecklistServices checklistServices;
     private final ChecklistRules checklistRules;
+
+    private final Queue<ChecklistPendenteDto> filaPendentes = new ArrayDeque<>();
 
     public ChecklistService(ChecklistRepository checklistRepository, ChecklistServices checklistServices, ChecklistRules checklistRules) {
         this.checklistRepository = checklistRepository;
@@ -64,19 +69,33 @@ public class ChecklistService {
 
         checklist.setStatus(StatusChecklist.HOMOLOGADO);
 
+        filaPendentes.poll();
+
         return dadosEntrada;
     }
 
     public ChecklistPendenteDto criarChecklistPendente(){
 
-        LocalDate ld = LocalDate.of(2026, 8, 4);
-        LocalTime lt = LocalTime.of(9,15,30);
+        //LocalDate ld = LocalDate.of(2026, 8, 4);
+        //LocalTime lt = LocalTime.of(9,15,30);
+
+        LocalDate ld = LocalDate.now();
+        LocalTime lt = LocalTime.now();
 
         if (!checklistRules.validarPeriodosValidosPreenchimentoChecklist(ld, lt))
             return null;
 
+
+
         String dataAtual = ld.getDayOfWeek().toString();
         HorarioAula horarioAtual = HorarioAula.obterHorarioInicio(lt);
+
+        if(!filaPendentes.isEmpty())
+
+            if(horarioAtual.getValue() == filaPendentes.peek().horaEntrada())
+                return filaPendentes.peek();
+
+            
 
         Periodo periodo = checklistServices.periodoService().encontrarPeriodo(dataAtual, horarioAtual);
 
@@ -102,8 +121,6 @@ public class ChecklistService {
         List<Professor> professores = checklist.getPeriodo().getProfessores();
         List<ItemChecklist> itens = checklist.getItensChecklist();
 
-
-
         List<ProfessorDto> professoresDto = professores.stream().map(p -> new ProfessorDto(p.getNome())).toList();
         List<ItemChecklistDto> itensDto = itens.stream()
                 .map(item -> new ItemChecklistDto(
@@ -117,7 +134,7 @@ public class ChecklistService {
                 ))
                 .toList();
 
-        return new ChecklistPendenteDto(checklist.getId(),
+        ChecklistPendenteDto pendente = new ChecklistPendenteDto(checklist.getId(),
                                         checklist.getData(),
                                         checklist.getStatus(),
                                         itensDto,
@@ -125,5 +142,9 @@ public class ChecklistService {
                                         checklist.getDiaSemana(),
                                         checklist.getHoraEntrada().getValue(),
                                         checklist.getHoraSaida().getValue());
+
+        filaPendentes.add(pendente);
+
+        return pendente;
     }
 }
