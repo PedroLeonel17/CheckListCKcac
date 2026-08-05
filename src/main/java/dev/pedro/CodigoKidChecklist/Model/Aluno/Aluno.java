@@ -31,7 +31,7 @@ public class Aluno {
     private List<Curso> cursos;
 
     public Aluno() {
-
+        
     }
 
 }

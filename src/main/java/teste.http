@@ -73,7 +73,7 @@ GET http://localhost:8080/checklist/acompanhamento
 PATCH http://localhost:8080/checklist/acompanhamento
 Content-Type: application/json
 
-{
+{ 
   "id": 9,
   "itemConsolidado": [
     {
