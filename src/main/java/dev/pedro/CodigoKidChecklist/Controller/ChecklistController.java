@@ -1,14 +1,11 @@
 package dev.pedro.CodigoKidChecklist.Controller;
 
 import dev.pedro.CodigoKidChecklist.Dto.Checklist.*;
-import dev.pedro.CodigoKidChecklist.Dto.Periodo.PeriodoDto;
 import dev.pedro.CodigoKidChecklist.Services.ChecklistService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
-import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")

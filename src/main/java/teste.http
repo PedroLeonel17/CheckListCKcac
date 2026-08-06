@@ -1,11 +1,18 @@
-POST http://localhost:8080/alunos
-Content-Type: application/json
+GET http://localhost:8080/alunos/2
 
+###
+GET http://localhost:8080/curso/2
+
+###
+POST http://localhost:8080/curso
+Content-Type: application/json
 {
-  "nome": "João",
-  "curso": "Informática"
+"nome": "CURSO DAVI"
 }
 
+
+###
+GET http://localhost:8080/alunos/nomes
 ###
 POST http://localhost:8080/alunos
 Content-Type: application/json

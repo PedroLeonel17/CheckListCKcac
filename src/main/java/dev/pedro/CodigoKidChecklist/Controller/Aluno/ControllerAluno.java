@@ -1,12 +1,11 @@
 package dev.pedro.CodigoKidChecklist.Controller.Aluno;
 
-import dev.pedro.CodigoKidChecklist.Dto.Aluno.AlunoCadastroDTO;
+import dev.pedro.CodigoKidChecklist.Dto.Aluno.AlunoCadastradoDTO;
 import dev.pedro.CodigoKidChecklist.Dto.Aluno.AlunoDTO;
-import dev.pedro.CodigoKidChecklist.Dto.Aluno.AlunosNomesDTO;
-import dev.pedro.CodigoKidChecklist.Dto.Aluno.CursosDisponiveisDto;
+import dev.pedro.CodigoKidChecklist.Dto.CursoDto.CursoIdDto;
 import dev.pedro.CodigoKidChecklist.Model.Aluno.Aluno;
-import dev.pedro.CodigoKidChecklist.Services.ChecklistService;
 import dev.pedro.CodigoKidChecklist.Services.Aluno.AlunoService;
+import dev.pedro.CodigoKidChecklist.Services.CursoService.CursoService;
 
 import java.util.List;
 
@@ -20,17 +19,16 @@ import org.springframework.web.bind.annotation.*;
 public class ControllerAluno {
 
     private final AlunoService alunoService;
-    private final ChecklistService checklistService;
+    private final CursoService cursoService;
 
-    public ControllerAluno(AlunoService alunoService, ChecklistService checklistService) {
+    public ControllerAluno(AlunoService alunoService, CursoService cursoService) {
         this.alunoService = alunoService;
-        this.checklistService = checklistService;
+        this.cursoService = cursoService;
     }
 
-    // Salvar aluno (Mapeia o POST para "/alunos")
     @PostMapping
-    public ResponseEntity<AlunoDTO> salvar(@RequestBody AlunoCadastroDTO dto) {
-        AlunoDTO novoAluno = alunoService.salvarNovoAluno(dto);
+    public ResponseEntity<AlunoDTO> finalizarCadastro(@RequestBody AlunoCadastradoDTO dto) {
+        AlunoDTO novoAluno = alunoService.finalizarCadastro(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoAluno);
     }
 
@@ -49,13 +47,15 @@ public class ControllerAluno {
     }
 
     @GetMapping("/nomes")
-    public List<AlunosNomesDTO> buscarAlunos() {
-    return alunoService.buscarTodosNomesAlunos();
+    public ResponseEntity<List<AlunoDTO>> buscarAlunos() {
+        return ResponseEntity.ok(alunoService.listarTodos());
     }
 
-    @GetMapping("/cursos")
-    public List<CursosDisponiveisDto> buscarCursos() {
-    return alunoService.buscarPorTodosCursos();
-    }
+    /*
+    @PatchMapping("/cursos/{id}")
+    public ResponseEntity<AlunoDTO> atualizarCurso(List<CursoIdDto> cursoIds) {
 
+        AlunoDTO aluno = alunoService.atualizarCurso(cursoIds);
+        return ResponseEntity.ok(aluno);
+    }   */
 }

@@ -1,13 +1,12 @@
 package dev.pedro.CodigoKidChecklist.Services.CursoService;
 
-import java.net.URI;
-
 import java.util.List;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import dev.pedro.CodigoKidChecklist.Dto.CursoDto.CursoAdicionarDto;
 import dev.pedro.CodigoKidChecklist.Dto.CursoDto.CursoDto;
+import dev.pedro.CodigoKidChecklist.Dto.CursoDto.CursoIdDto;
+import dev.pedro.CodigoKidChecklist.Exceptions.CursoListagemException;
 import dev.pedro.CodigoKidChecklist.Model.Curso;
 import dev.pedro.CodigoKidChecklist.Repository.CursoRepository;
 
@@ -21,21 +20,21 @@ public class CursoService {
         this.cursoRepository = cursoRepository;
     }
 
-    public CursoDto salvar(CursoDto cursoDto){
+    public CursoDto salvar(CursoAdicionarDto cursoDto){
 
         Curso curso = new Curso();
         curso.setNome(cursoDto.nome());
 
-        cursoRepository.save(curso);
+        Curso novoCurso = cursoRepository.save(curso);
 
-        CursoDto resp = new CursoDto(curso.getId(), curso.getNome());
+        CursoDto resp = new CursoDto(novoCurso.getId(), novoCurso.getNome());
         
         return resp;
     }
 
     public CursoDto deletar(CursoDto cursoDto){
 
-        Curso curso = cursoRepository.deleteByName(cursoDto.nome()).orElseThrow();
+        Curso curso = cursoRepository.deleteByNome(cursoDto.nome()).orElseThrow();
 
         CursoDto resp = new CursoDto(curso.getId(),curso.getNome());
         
@@ -67,6 +66,21 @@ public class CursoService {
         List<CursoDto> cursosDto = cursos.stream().map(c -> new CursoDto(c.getId(),c.getNome())).toList();
 
         return cursosDto;
+    }
+
+    public List<Curso> listarTodosPeloId(List<CursoIdDto> idsDosCursos){
+
+        List<Long> ids = idsDosCursos.stream()
+            .map(CursoIdDto::id)
+            .toList();
+
+        List<Curso> cursos = cursoRepository.findAllById(ids);
+
+        if(ids.size() != cursos.size())
+           throw new CursoListagemException("Um ou mais cursos informados não foram encontrados.");
+        
+        return cursos;
+
     }
 
     public CursoDto encontrar(Long id){

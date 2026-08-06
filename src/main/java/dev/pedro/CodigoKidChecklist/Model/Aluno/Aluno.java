@@ -17,8 +17,6 @@ public class Aluno {
 
     private String nome;
 
-    private String curso;
-
     private LocalDate dataMatricula;
     private LocalDate dataConclusao;
 

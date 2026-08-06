@@ -1,7 +1,9 @@
 package dev.pedro.CodigoKidChecklist.Controller;
 
+import dev.pedro.CodigoKidChecklist.Dto.CursoDto.CursoAdicionarDto;
 import dev.pedro.CodigoKidChecklist.Dto.CursoDto.CursoDto;
 import dev.pedro.CodigoKidChecklist.Services.CursoService.CursoService;
+import jakarta.websocket.server.PathParam;
 
 import java.util.List;
 
@@ -21,14 +23,14 @@ public class ControllerCurso {
     }
     
     @PostMapping
-    public ResponseEntity<CursoDto> salvar(@RequestBody CursoDto dto) {
+    public ResponseEntity<CursoDto> salvar(@RequestBody CursoAdicionarDto dto) {
         CursoDto cursoDto = cursoService.salvar(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(cursoDto);
     }
 
     
     @GetMapping("/{id}")
-    public ResponseEntity<CursoDto> verificar(@RequestAttribute Long id) {
+    public ResponseEntity<CursoDto> verificar(@PathVariable Long id) {
         CursoDto cursoDto = cursoService.encontrar(id);
         return ResponseEntity.status(HttpStatus.OK).body(cursoDto);
     }
