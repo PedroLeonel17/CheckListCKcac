@@ -16,5 +16,4 @@ public class AlunosNomesDTO {
     public AlunosNomesDTO(String nome) {
         this.nome = nome;
     }
-
 }

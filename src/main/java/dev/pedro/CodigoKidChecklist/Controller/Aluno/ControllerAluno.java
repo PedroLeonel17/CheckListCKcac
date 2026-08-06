@@ -3,7 +3,7 @@ package dev.pedro.CodigoKidChecklist.Controller.Aluno;
 import dev.pedro.CodigoKidChecklist.Dto.Aluno.AlunoCadastroDTO;
 import dev.pedro.CodigoKidChecklist.Dto.Aluno.AlunoDTO;
 import dev.pedro.CodigoKidChecklist.Dto.Aluno.AlunosNomesDTO;
-import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistDto;
+import dev.pedro.CodigoKidChecklist.Dto.Aluno.CursosDisponiveisDto;
 import dev.pedro.CodigoKidChecklist.Model.Aluno.Aluno;
 import dev.pedro.CodigoKidChecklist.Services.ChecklistService;
 import dev.pedro.CodigoKidChecklist.Services.Aluno.AlunoService;
@@ -42,11 +42,6 @@ public class ControllerAluno {
         return ResponseEntity.ok(aluno);
     }
 
-    @GetMapping("/alunos")
-    public List<ChecklistDto> listarAlunos() {
-        return checklistService.buscarTodos();
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Aluno> deletarAluno(@PathVariable Long id) {
         alunoService.deletarAluno(id);
@@ -56,6 +51,11 @@ public class ControllerAluno {
     @GetMapping("/nomes")
     public List<AlunosNomesDTO> buscarAlunos() {
     return alunoService.buscarTodosNomesAlunos();
+    }
+
+    @GetMapping("/cursos")
+    public List<CursosDisponiveisDto> buscarCursos() {
+    return alunoService.buscarPorTodosCursos();
     }
 
 }
