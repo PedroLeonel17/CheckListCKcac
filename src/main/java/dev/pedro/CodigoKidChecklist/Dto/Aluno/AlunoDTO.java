@@ -1,17 +1,10 @@
 package dev.pedro.CodigoKidChecklist.Dto.Aluno;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.List;
 
-@Setter
-@Getter
-public class AlunoDTO {
-    private String nome;
+import dev.pedro.CodigoKidChecklist.Dto.CursoDto.CursoDto;
 
-    private String curso;
-
-    public AlunoDTO() {
-
-    }
+public record AlunoDTO(Long id, String nome, List<CursoDto> curso) {
+  
 
 }

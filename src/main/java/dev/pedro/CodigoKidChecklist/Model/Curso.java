@@ -16,6 +16,7 @@ public class Curso {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private String nome;
 
     @ManyToMany(mappedBy = "cursos")
