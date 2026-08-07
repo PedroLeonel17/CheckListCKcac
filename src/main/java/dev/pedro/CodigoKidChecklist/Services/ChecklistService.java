@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Queue;
 
 
@@ -105,6 +106,7 @@ public class ChecklistService {
         checklist.setHoraSaida(periodo.getFim());
         checklist.setPeriodo(periodo);
         checklist.setStatus(StatusChecklist.PENDENTE);
+        checklist.setProfessores(new ArrayList<>(periodo.getProfessores()));
 
         for(Aluno aluno : periodo.getAlunos()){
             ItemChecklist itemChecklist = new ItemChecklist();
@@ -116,7 +118,7 @@ public class ChecklistService {
 
         checklistRepository.save(checklist);
 
-        List<Professor> professores = checklist.getPeriodo().getProfessores();
+        List<Professor> professores = checklist.getProfessores();
         List<ItemChecklist> itens = checklist.getItensChecklist();
 
         List<ProfessorDto> professoresDto = gerarListaDeProfessorDto(professores);
