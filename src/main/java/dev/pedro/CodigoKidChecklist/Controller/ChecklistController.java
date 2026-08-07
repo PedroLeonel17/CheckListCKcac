@@ -33,7 +33,7 @@ public class ChecklistController{
     }
 
     @GetMapping("/acompanhamento")
-    @Operation(summary = "Carrega checklist pendente")
+    @Operation(summary = "Carrega checklist pendente do periodo atual")
     public ResponseEntity<ChecklistCompletoDto> buscarPorDataAtual() {
 
         ChecklistCompletoDto ocorrencias = checklistService.criarChecklistPendente();
@@ -42,7 +42,14 @@ public class ChecklistController{
     }
 
     @GetMapping
+     @Operation(summary = "Carrega todos checklists")
     public ResponseEntity<List<ChecklistCompletoDto>> buscarTodos(){
         return ResponseEntity.ok(checklistService.findAll());
+    }
+
+    @GetMapping("/consolidados")
+     @Operation(summary = "Listar checklists consolidados")
+    public ResponseEntity<List<ChecklistCompletoDto>> buscarConsolidados(){
+        return ResponseEntity.ok(checklistService.findConsolidados());
     }
 }

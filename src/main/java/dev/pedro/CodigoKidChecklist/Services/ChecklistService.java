@@ -132,19 +132,23 @@ public class ChecklistService {
     }
 
     public List<ChecklistCompletoDto> findAll(){
-
         List<Checklist> checklists = checklistRepository.findAll();
+        return gerarListaDeChecklistCompletoDto(checklists);
+    }
 
-        List<ChecklistCompletoDto> checklistsCompletosDtos = checklists.stream().map(check -> {
+    public List<ChecklistCompletoDto> findConsolidados(){
+        List<Checklist> checklists = checklistRepository.findAllByStatus(StatusChecklist.HOMOLOGADO);
+        return gerarListaDeChecklistCompletoDto(checklists);
+    }
+
+    private List<ChecklistCompletoDto> gerarListaDeChecklistCompletoDto(List<Checklist> checklists){
+        return checklists.stream().map(check -> {
             List<Professor> professores = check.getProfessores();
             List<ItemChecklist> itens = check.getItensChecklist();
             List<ItemChecklistDto> itensDto = gerarItemChecklistDtos(itens);
             List<ProfessorDto> professoresDto = gerarListaDeProfessorDto(professores);
-
             return gerarChecklistCompletoDto(check, professoresDto,itensDto);
         }).toList();
-
-        return checklistsCompletosDtos;
     }
 
     private ChecklistCompletoDto gerarChecklistCompletoDto(Checklist checklist, List<ProfessorDto> professoresDto, List<ItemChecklistDto> itensDto){

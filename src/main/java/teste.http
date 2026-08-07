@@ -83,3 +83,10 @@ Content-Type: application/json
   "id": 14,
   "itemConsolidado": []
 }
+
+###
+GET http://localhost:8080/checklist
+
+###
+
+GET http://localhost:8080/checklist/consolidados
