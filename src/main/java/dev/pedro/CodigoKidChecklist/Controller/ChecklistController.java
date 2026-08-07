@@ -5,6 +5,8 @@ import dev.pedro.CodigoKidChecklist.Services.ChecklistService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,10 +34,15 @@ public class ChecklistController{
 
     @GetMapping("/acompanhamento")
     @Operation(summary = "Carrega checklist pendente")
-    public ResponseEntity<ChecklistPendenteDto> buscarPorDataAtual() {
+    public ResponseEntity<ChecklistCompletoDto> buscarPorDataAtual() {
 
-        ChecklistPendenteDto ocorrencias = checklistService.criarChecklistPendente();
+        ChecklistCompletoDto ocorrencias = checklistService.criarChecklistPendente();
 
         return ResponseEntity.ok(ocorrencias);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ChecklistCompletoDto>> buscarTodos(){
+        return ResponseEntity.ok(checklistService.findAll());
     }
 }

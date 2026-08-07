@@ -39,10 +39,7 @@ public class AlunoService {
 
         Aluno alunoCadastrado = alunoRepository.save(aluno);
         
-        List<CursoDto> cursosDto = alunoCadastrado.getCursos()
-                                        .stream()
-                                        .map(c -> new CursoDto(c.getId(), c.getNome()))
-                                        .toList();
+        List<CursoDto> cursosDto = cursosDoAluno(alunoCadastrado);
 
         return new AlunoDTO(alunoCadastrado.getId(), alunoCadastrado.getNome(), cursosDto);
     }
@@ -71,8 +68,7 @@ public class AlunoService {
 
     public List<AlunoDTO> listarTodos() {
 
-        return alunoRepository.findAll().stream().map (
-                                                        a -> new AlunoDTO(a.getId(),
+        return alunoRepository.findAll().stream().map (a -> new AlunoDTO(a.getId(),
                                                         a.getNome(), 
                                                         cursosDoAluno(a))
                                                       )

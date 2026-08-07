@@ -64,5 +64,5 @@ public class ControllerAluno {
 
         AlunoDTO aluno = alunoService.atualizarCurso(cursoIds);
         return ResponseEntity.ok(aluno);
-    }   */
+    } */
 }

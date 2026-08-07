@@ -39,4 +39,12 @@ public class Checklist {
     @JoinColumn(name = "checklist_id")
     private List<ItemChecklist> itensChecklist = new ArrayList<>();
 
+
+    @ManyToMany
+    @JoinTable(
+        name = "checklist_professores",
+        joinColumns = @JoinColumn(name = "checklist_id"),
+        inverseJoinColumns = @JoinColumn(name = "professores_id")
+    )
+    private List<Professor> professores;
 }

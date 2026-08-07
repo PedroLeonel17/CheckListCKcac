@@ -1,7 +1,7 @@
 package dev.pedro.CodigoKidChecklist.Services;
 
 import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistConsolidadoDto;
-import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistPendenteDto;
+import dev.pedro.CodigoKidChecklist.Dto.Checklist.ChecklistCompletoDto;
 import dev.pedro.CodigoKidChecklist.Dto.ItemChecklistDto.ItemChecklistConsolidadoDto;
 import dev.pedro.CodigoKidChecklist.Dto.ItemChecklistDto.ItemChecklistDto;
 import dev.pedro.CodigoKidChecklist.Dto.Professor.ProfessorDto;
@@ -34,7 +34,7 @@ public class ChecklistService {
     private final ChecklistServices checklistServices;
     private final ChecklistRules checklistRules;
 
-    private final Queue<ChecklistPendenteDto> filaPendentes = new ArrayDeque<>();
+    private final Queue<ChecklistCompletoDto> filaPendentes = new ArrayDeque<>();
 
     public ChecklistService(ChecklistRepository checklistRepository, ChecklistServices checklistServices, ChecklistRules checklistRules) {
         this.checklistRepository = checklistRepository;
@@ -74,7 +74,7 @@ public class ChecklistService {
         return dadosEntrada;
     }
 
-    public ChecklistPendenteDto criarChecklistPendente(){
+    public ChecklistCompletoDto criarChecklistPendente(){
 
         //LocalDate ld = LocalDate.of(2026, 8, 4);
         //LocalTime lt = LocalTime.of(9,15,30);
@@ -121,8 +121,45 @@ public class ChecklistService {
         List<Professor> professores = checklist.getPeriodo().getProfessores();
         List<ItemChecklist> itens = checklist.getItensChecklist();
 
-        List<ProfessorDto> professoresDto = professores.stream().map(p -> new ProfessorDto(p.getNome())).toList();
-        List<ItemChecklistDto> itensDto = itens.stream()
+        List<ProfessorDto> professoresDto = gerarListaDeProfessorDto(professores);
+        List<ItemChecklistDto> itensDto = gerarItemChecklistDtos(itens);
+
+        ChecklistCompletoDto pendente = gerarChecklistCompletoDto(checklist, professoresDto, itensDto);
+
+        filaPendentes.add(pendente);
+
+        return pendente;
+    }
+
+    public List<ChecklistCompletoDto> findAll(){
+
+        List<Checklist> checklists = checklistRepository.findAll();
+
+        List<ChecklistCompletoDto> checklistsCompletosDtos = checklists.stream().map(check -> {
+            List<Professor> professores = check.getProfessores();
+            List<ItemChecklist> itens = check.getItensChecklist();
+            List<ItemChecklistDto> itensDto = gerarItemChecklistDtos(itens);
+            List<ProfessorDto> professoresDto = gerarListaDeProfessorDto(professores);
+
+            return gerarChecklistCompletoDto(check, professoresDto,itensDto);
+        }).toList();
+
+        return checklistsCompletosDtos;
+    }
+
+    private ChecklistCompletoDto gerarChecklistCompletoDto(Checklist checklist, List<ProfessorDto> professoresDto, List<ItemChecklistDto> itensDto){
+        return new ChecklistCompletoDto(checklist.getId(),
+                                        checklist.getData(),
+                                        checklist.getStatus(),
+                                        itensDto,
+                                        professoresDto,
+                                        checklist.getDiaSemana(),
+                                        checklist.getHoraEntrada().getValue(),
+                                        checklist.getHoraSaida().getValue());
+    }
+
+    private List<ItemChecklistDto> gerarItemChecklistDtos(List<ItemChecklist> itens){
+        return itens.stream()
                 .map(item -> new ItemChecklistDto(
                         item.getId(),
                         item.getAluno().getNome(),
@@ -133,18 +170,9 @@ public class ChecklistService {
                         item.isIntervalo()
                 ))
                 .toList();
+    }
 
-        ChecklistPendenteDto pendente = new ChecklistPendenteDto(checklist.getId(),
-                                        checklist.getData(),
-                                        checklist.getStatus(),
-                                        itensDto,
-                                        professoresDto,
-                                        checklist.getDiaSemana(),
-                                        checklist.getHoraEntrada().getValue(),
-                                        checklist.getHoraSaida().getValue());
-
-        filaPendentes.add(pendente);
-
-        return pendente;
+    private List<ProfessorDto> gerarListaDeProfessorDto(List<Professor> professores){
+        return professores.stream().map(p -> new ProfessorDto(p.getNome())).toList();
     }
 }

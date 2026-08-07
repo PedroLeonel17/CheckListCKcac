@@ -7,7 +7,7 @@ import dev.pedro.CodigoKidChecklist.Enums.StatusChecklist;
 import java.time.LocalDate;
 import java.util.List;
 
-public record ChecklistPendenteDto(Long id,
+public record ChecklistCompletoDto(Long id,
                                    LocalDate data,
                                    StatusChecklist status,
                                    List<ItemChecklistDto> itemChecklistDto,
