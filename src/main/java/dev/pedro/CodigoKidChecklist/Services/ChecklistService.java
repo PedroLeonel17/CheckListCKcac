@@ -95,8 +95,6 @@ public class ChecklistService {
             if(horarioAtual.getValue() == filaPendentes.peek().horaEntrada())
                 return filaPendentes.peek();
 
-            
-
         Periodo periodo = checklistServices.periodoService().encontrarPeriodo(dataAtual, horarioAtual);
 
         Checklist checklist = new Checklist();
@@ -138,6 +136,11 @@ public class ChecklistService {
 
     public List<ChecklistCompletoDto> findConsolidados(){
         List<Checklist> checklists = checklistRepository.findAllByStatus(StatusChecklist.HOMOLOGADO);
+        return gerarListaDeChecklistCompletoDto(checklists);
+    }
+
+    public List<ChecklistCompletoDto> findPendentes(){
+        List<Checklist> checklists = checklistRepository.findAllByStatus(StatusChecklist.PENDENTE);
         return gerarListaDeChecklistCompletoDto(checklists);
     }
 

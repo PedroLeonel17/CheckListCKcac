@@ -52,4 +52,10 @@ public class ChecklistController{
     public ResponseEntity<List<ChecklistCompletoDto>> buscarConsolidados(){
         return ResponseEntity.ok(checklistService.findConsolidados());
     }
+
+    @GetMapping("/pendentes")
+    @Operation(summary = "Listar checklists pendentes")
+    public ResponseEntity<List<ChecklistCompletoDto>> buscarPendentes(){
+        return ResponseEntity.ok(checklistService.findPendentes());
+    }
 }

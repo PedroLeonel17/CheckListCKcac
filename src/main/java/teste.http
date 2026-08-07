@@ -90,3 +90,5 @@ GET http://localhost:8080/checklist
 ###
 
 GET http://localhost:8080/checklist/consolidados
+###
+GET http://localhost:8080/checklist/pendentes
