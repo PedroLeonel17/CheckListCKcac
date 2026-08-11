@@ -1,7 +1,6 @@
 package dev.pedro.CodigoKidChecklist.Model;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
 import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;

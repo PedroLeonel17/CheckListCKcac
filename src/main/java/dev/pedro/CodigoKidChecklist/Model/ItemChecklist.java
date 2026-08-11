@@ -1,12 +1,8 @@
 package dev.pedro.CodigoKidChecklist.Model;
 
-import dev.pedro.CodigoKidChecklist.Enums.HorarioAula;
 import dev.pedro.CodigoKidChecklist.Model.Aluno.Aluno;
 import jakarta.persistence.*;
 import lombok.Data;
-
-import java.time.LocalDate;
-
 
 @Entity
 @Table(name = "item_checklist")

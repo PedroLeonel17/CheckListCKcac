@@ -1,6 +1,5 @@
 package dev.pedro.CodigoKidChecklist.Dto.Checklist;
 import dev.pedro.CodigoKidChecklist.Dto.ItemChecklistDto.ItemChecklistDto;
-import dev.pedro.CodigoKidChecklist.Dto.Periodo.PeriodoDto;
 import dev.pedro.CodigoKidChecklist.Dto.Professor.ProfessorDto;
 import dev.pedro.CodigoKidChecklist.Enums.StatusChecklist;
 

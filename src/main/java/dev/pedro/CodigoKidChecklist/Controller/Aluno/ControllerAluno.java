@@ -2,7 +2,6 @@ package dev.pedro.CodigoKidChecklist.Controller.Aluno;
 
 import dev.pedro.CodigoKidChecklist.Dto.Aluno.AlunoCadastradoDTO;
 import dev.pedro.CodigoKidChecklist.Dto.Aluno.AlunoDTO;
-import dev.pedro.CodigoKidChecklist.Dto.CursoDto.CursoIdDto;
 import dev.pedro.CodigoKidChecklist.Model.Aluno.Aluno;
 import dev.pedro.CodigoKidChecklist.Services.Aluno.AlunoService;
 import dev.pedro.CodigoKidChecklist.Services.CursoService.CursoService;
